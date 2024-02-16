@@ -1,6 +1,6 @@
 # ProcFinalUSHouse
 
-This repository produces the results and figures from the following manuscript:
+This repository produces the results and figures from [Explaining Differences in Voting Patterns Across Voting Domains Using Hierarchical Bayesian Models (Lipman, Moser, & Rodriguez, 2023)](<https://arxiv.org/abs/2312.15049>) 
 
 ADD CITATION
 
