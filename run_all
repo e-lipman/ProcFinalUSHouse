@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# parameters for this script
+
+## only remake figures, don't rerun models
+FIGURES_ONLY=0
+
+## TEST indicates whether the below hyperparameters are the default values (test run)
+##     or the actual values used for the paper, indicated below in comment#
+##     this is neccesary for the figures scripts since model hyperparams for filenames are hard-coded
+##     if using other values for hyperparameters, hardcoding in figures scripts must be modified manually
+TEST=1 # 0 for full run
+
+#############################################
+
+# part 1: global hyperparameters
+
+## earliest congress number
+export CONG_MIN=93 # 93
+## latest congress number
+export CONG_MAX=94 # 113
+
+## number of chains
+export CHAINS=2 # 4 (8 for 105th congress)
+
+## number of burn-in
+export BURN=10 #20000
+
+## number of iterations
+export ITER=10 #15000 (20000 for H105)
+
+## thinning factor
+export THIN=1 #20 (25 for H105)
+
+#############################################
+
+# part 2: run models
+
+if [ $FIGURES_ONLY -eq 0 ]; then
+
+## Sample from full posterior (and postprocess)
+cd IdealPointsCompare
+
+fldr="joint"
+stage=0
+
+for ((cong=$CONG_MIN; cong<=$CONG_MAX; cong++))
+do
+for ((chain=1; chain<=$CHAINS; chain++))
+do
+	cong_str=`printf %03d $cong`
+        fileid=H$cong_str'_'$chain'_'$fldr
+        echo $fileid
+	Rscript 1_run_models.R $cong $chain $stage $BURN \
+		$ITER $THIN $fldr
+
+done
+	suffix=${BURN}_${ITER}_${THIN}
+	Rscript 2_postprocess.R $cong $stage $fldr $suffix
+done
+
+cd ..
+
+fi
+
+
+
+#############################################
+
+# part 3: make figures
+Rscript make_data_figures.R
+Rscript make_results_figures.R $TEST
+
+
+
+
