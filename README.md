@@ -17,3 +17,7 @@ Documentation for the source code and data is contained in the README for the `I
 - Top level bash script to run all analyses and produce all figures. Global hyperparameters are set to small values to run very short test runs for a few sessions of the House. Parameters needed to replicate the results in the manuscript are indicated via comments in this script.
 
 - Running the script for the full-length analyses requires parallelization at the level of congress and chain by modifying the for loops. Runtimes for the full model runs are on the order of days. 
+
+`make_data_figures.R`: Makes Figures 1-3 (descriptive analysis)
+
+`make_results_figures.R`: Makes Figures 4-8 (results)
