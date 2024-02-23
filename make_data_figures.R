@@ -148,6 +148,7 @@ dat_summary %>%
   select(cong, prv) %>%
   unnest(prv) %>%
   ggplot(aes(x=as.factor(cong), y=prv, color=party)) +
+  geom_hline(yintercept=.5, linetype="solid", alpha=.5) +
   geom_boxplot(outlier.size = .5) +
   xlab("House") +
   scale_y_continuous("Republican voteshare", limits = c(0,1)) +
