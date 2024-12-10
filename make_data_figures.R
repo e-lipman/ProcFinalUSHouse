@@ -2,6 +2,8 @@ library(tidyverse)
 library(yaml)
 library(ggcorrplot)
 
+source("helper_funs.R")
+
 configs <- read_yaml(file.path("IdealPointsCompare",
                                "configs.yml"))
 
@@ -24,32 +26,6 @@ make_shading <- function(dat_summary){
     pivot_wider(names_from=type, values_from=cong) %>%
     mutate(end=ifelse(is.na(end), start, end)) %>%
     filter(party=="R") 
-}
-
-standardize <- function(col){
-  if (all(col %in% 0:1)){
-    return(col-mean(col))
-  } else {
-    return( (col-mean(col))/sd(col) )
-  }
-}
-
-percent_with_party <- function(dat){
-  y <- dat$y  
-  party <- dat$members$party
-  gamma <- c(rep(0, dat$gam0_maxC+1), rep(1,ncol(y)-dat$gam0_maxC-1))
-  R_vote <- as.numeric(colMeans(y[party=="R",], na.rm=T)>.5)
-  D_vote <- as.numeric(colMeans(y[party=="D",], na.rm=T)>.5)
-  
-  R_with <- y==matrix(rep(R_vote, nrow(y)), nrow=nrow(y), byrow = T)
-  D_with <- y==matrix(rep(D_vote, nrow(y)), nrow=nrow(y), byrow = T)
-  
-  R_with_type <- map(0:1, ~rowMeans(R_with[,gamma==.x], na.rm=T))
-  D_with_type <- map(0:1, ~rowMeans(D_with[,gamma==.x], na.rm=T))
-  
-  tibble(party=party, 
-         proc_with_party=ifelse(party=="R",R_with_type[[1]],D_with_type[[1]]),
-         final_with_party=ifelse(party=="R",R_with_type[[2]],D_with_type[[2]])) 
 }
 
 summarise_one <- function(cong_num){

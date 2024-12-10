@@ -3,64 +3,29 @@ library(yaml)
 library(scales)
 library(pander)
 
-configs <- read_yaml(file.path("IdealPointsCompare","configs.yml"))
+source("helper_funs.R")
 
+configs <- read_yaml(file.path("IdealPointsCompare","configs.yml"))
 args = commandArgs(trailingOnly = T)
-args <- as.list(args)
-names(args) <- c("test")
+if (length(args)==0){
+  args <- list(test=T)  
+} else {
+  args <- as.list(args)
+  names(args) <- c("test")  
+}
 test=(args$test==1)
 
 FLDR = "joint"
-test=T
 if (test){
   CONGS=93:94
 } else {
   CONGS=93:113
 }
 
-in_path <- file.path("IdealPointsCompare")
+#in_path <- file.path("IdealPointsCompare")
+in_path <- file.path("..","SenateIdeals")
 out_path <- file.path("Figures")
 dir.create(out_path, showWarnings = F)
-
-read_one <- function(cong_num, folder,
-                     suffix="10000_5000_10"){
-  
-  suffix <- case_when(test~"10_10_1",
-                      cong_num==105~"20000_20000_25", 
-                      T~"20000_15000_20")
-  
-  cong_str = paste0("H", str_pad(cong_num, 3, pad=0))
-  
-  # get res stage 1
-  path1 = file.path(in_path,"Results",folder,"Combined",
-                    paste0(cong_str, "_", suffix, "_combined.RDS"))
-  res <- readRDS(path1)
-  
-  # data quantities
-  dat <- readRDS(file.path(in_path,"Data",
-                           paste0("inputs_", cong_str, ".RDS")))
-  
-  tht <- reduce(
-    map(res$stage2[names(res$stage2)!="covariates"], ~(.x$theta)), rbind)
-  covs <- tibble(p_R=dat$covariates$p_R,
-                 recentArrivalPrcnt=dat$covariates$recentArrivalPrcnt,
-                 dwnom1=dat$covariates$dwnom1)
-  
-  # for scaling coefficients
-  binary <- map_dbl(dat$covariates[,configs$covariates],
-                    ~all(.x %in% 0:1))
-  cov_sd <- map_dbl(dat$covariates[,configs$covariates], sd)
-  scale <- ifelse(binary, 1, cov_sd)
-  
-  tibble(summy=list(res$summy), 
-         stage2=list(res$stage2),
-         #polar=list(polar),
-         covs = list(covs),
-         party = dat$cong_info$partyControl,
-         cov_scale=list(scale),
-         res=list(res$res))
-}
-
 
 ###########################################
 
@@ -201,6 +166,12 @@ dat_colorplot <- model_all %>%
   arrange(type,n_selected) %>%
   mutate(cov=fct_relevel(cov,unique(cov)))
 
+# save cov order for elsewhere
+saveRDS(
+  levels(dat_colorplot$cov)[n_distinct(dat_colorplot$cov):1],
+  "cov_order.RDS"
+)
+
 dat_colorplot %>% 
   rename(PIP=eps) %>%
   ggplot(aes(x=cong, y=cov, fill=PIP)) +
@@ -290,3 +261,4 @@ plot_cov("p_R_D", c=.05, lab_pow = 2)
 #paste0("Constituancy (Republican legislators only)",
 #"\nOR for increase of 5 percent")
 plot_cov("p_R_R", c=.05, lab_pow = 2)
+
