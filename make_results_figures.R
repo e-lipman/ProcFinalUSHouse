@@ -5,7 +5,7 @@ library(pander)
 
 source("helper_funs.R")
 
-configs <- read_yaml(file.path("IdealPointsCompare","configs.yml"))
+configs <- read_yaml("configs.yml")
 args = commandArgs(trailingOnly = T)
 if (length(args)==0){
   args <- list(test=T)  
@@ -22,8 +22,7 @@ if (test){
   CONGS=93:113
 }
 
-#in_path <- file.path("IdealPointsCompare")
-in_path <- file.path("..","SenateIdeals")
+in_path <- file.path(".")
 out_path <- file.path("Figures")
 dir.create(out_path, showWarnings = F)
 

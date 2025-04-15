@@ -1,0 +1,51 @@
+###################### Model ######################
+
+covariates: [
+  "recentArrivalPrcnt",
+  "prcntForeignBorn",
+  "gini",
+  "ses",
+  "prcntUnemp",
+  "prcntBA",
+  "prcntHS",
+  "prcntBlack",
+  "prcntHisp",
+  "prcntAsian",
+  "age",
+  "gender",
+  "black",
+  "hispanic",
+  "numberTerms", 
+  "numSpon", 
+  "numCosp", 
+  "numPassH", 
+  "belto.partyControl",
+  "p_R_R",
+  "p_R_D"
+]
+
+covariate_cats: 
+  party: [
+    "belto.partyControl",
+    "p_R_R",
+    "p_R_D"]
+  legislator: [
+    "age",
+    "gender",
+    "black",
+    "hispanic",
+    "numberTerms", 
+    "numSpon", 
+    "numCosp", 
+    "numPassH"]
+  constituancy: [
+    "recentArrivalPrcnt",
+    "prcntForeignBorn",
+    "gini",
+    "ses",
+    "prcntUnemp",
+    "prcntBA",
+    "prcntHS",
+    "prcntBlack",
+    "prcntHisp",
+    "prcntAsian"]

@@ -4,10 +4,10 @@ library(ggcorrplot)
 
 source("helper_funs.R")
 
-configs <- read_yaml(file.path("IdealPointsCompare",
+configs <- read_yaml(file.path(".",
                                "configs.yml"))
 
-in_path <- file.path("IdealPointsCompare")
+in_path <- file.path(".")
 out_path <- file.path("Figures")
 dir.create(out_path, showWarnings = F)
 dir.create(file.path(out_path,"Data"), showWarnings = F)
